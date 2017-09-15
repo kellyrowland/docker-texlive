@@ -1,7 +1,5 @@
 # Largely adapted from [thomasWeise/texlive](https://hub.docker.com/r/thomasweise/texlive/)
 
-[![Image Layers and Size](https://imagelayers.io/badge/thomasweise/texlive:latest.svg)](https://imagelayers.io/?images=thomasweise%2Ftexlive:latest)
-
 This is a Docker image containing a [TeX Live](https://en.wikipedia.org/wiki/TeX_Live) installation (version 2015.2016) with several support <a href="#user-content-3-scripts">scripts</a> for easing the compilation of [LaTeX](https://en.wikipedia.org/wiki/LaTeX) files to [PDF](https://en.wikipedia.org/wiki/Portable_Document_Format). The goal is to provide a unified environment for compiling LaTeX documents with predictable and reproducible behavior, while decreasing the effort needed to install and maintain the LaTeX installation.
 
 ## 0. Installing Docker
@@ -14,7 +12,7 @@ Docker can be installed following the guidelines below:
 
 ## 1. Usage
 
-Below, we discuss the various parameters that you can pass to this image when running it. If you have installed Docker, you do not need to perform any additional installations: The first time you do `docker run -t -i thomasweise/texlive` or something like that (see below), the image will automatically be downloaded and installed from [docker hub](https://hub.docker.com/).
+Below, we discuss the various parameters that you can pass to this image when running it. If you have installed Docker, you do not need to perform any additional installations: The first time you do `docker run -t -i kellyrowland/docker-texlive` or something like that (see below), the image will automatically be downloaded and installed from [docker hub](https://hub.docker.com/).
 
 There are two basic use cases of this image:
 
@@ -23,12 +21,12 @@ There are two basic use cases of this image:
 
 Additionally, there are two ways to provide data to the container:
 
-1. Mounting the folder where the LaTeX document you want to compile is located: This step is necessary..
+1. Mounting the folder where the LaTeX document you want to compile is located: This step is necessary.
 2. Mounting a folder with additional fonts needed for compiling your document: This is optional.
 
 The common form of the command is as follows:
 
-    docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive COMMAND ARG1 ARG2...
+    docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i kellyrowland/docker-texlive COMMAND ARG1 ARG2...
     
 Where
 
@@ -87,8 +85,6 @@ Usually, LaTeX compilation means to call the LaTeX compiler program, then BibTeX
 - `mintex.sh <document> <compiler1> <compiler2> ...` allows you to invoke an arbitrary selection of the above compiler scripts to produce the smallest `pdf`. Doing `mintex.sh mydoc latex lualatex xelatex`, for instance, will compile `mydoc.tex` with `latex.sh`, `lualatex.sh`, and `xelatex.sh` and keep the smallest resulting `pdf` file.
 
 ### 3.2. Utility Scripts
-
-We also provide some utility scripts for working with `PDF`, `PS`, and `EPS` files.
 
 - `sudo` is a pseudo-`sudo` command: Inside a Docker container, we don't need `sudo`. However, if you have a script or something that calls plain `sudo` (without additional arguments) just with a to-be-sudoed command, this script will emulate a `sudo`. By doing nothing.
 
