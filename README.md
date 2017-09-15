@@ -2,7 +2,7 @@
 
 [![Image Layers and Size](https://imagelayers.io/badge/thomasweise/texlive:latest.svg)](https://imagelayers.io/?images=thomasweise%2Ftexlive:latest)
 
-This is a Docker image containing a [TeX Live](https://en.wikipedia.org/wiki/TeX_Live) installation (version 2015.2016) with several support <a href="#user-content-3-scripts">scripts</a> for easing the compilation of [LaTeX](https://en.wikipedia.org/wiki/LaTeX) files to [PDF](https://en.wikipedia.org/wiki/Portable_Document_Format). The goal is to provide a unified environment for compiling LaTeX documents with predictable and reproducible behavior, while decreasing the effort needed to install and maintain the LaTeX installation. This image is designed to be especially suitable for a Chinese audience and comes with several pre-installed open Chinese fonts. 
+This is a Docker image containing a [TeX Live](https://en.wikipedia.org/wiki/TeX_Live) installation (version 2015.2016) with several support <a href="#user-content-3-scripts">scripts</a> for easing the compilation of [LaTeX](https://en.wikipedia.org/wiki/LaTeX) files to [PDF](https://en.wikipedia.org/wiki/Portable_Document_Format). The goal is to provide a unified environment for compiling LaTeX documents with predictable and reproducible behavior, while decreasing the effort needed to install and maintain the LaTeX installation.
 
 ## 0. Installing Docker
 
@@ -54,22 +54,25 @@ The `-v sourcepath:destpath` options are optional. They allow you to "mount" a f
 
 If you just want to use (or snoop around in) the image without mounting external folders, you can run this image by using:
 
-    docker run -t -i thomasweise/texlive
+    docker run -t -i kellyrowland/docker-texlive
 
 Another example for the use of the syntax for directly passing in a single command for execution is compiling a thesis based on the [USTC thesis template](https://github.com/ustctug/ustcthesis). Such documents can be compiled using `make`, so you could do something like
 
-    docker run -v /path/to/my/thesis/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive make
+    docker run -v /path/to/my/thesis/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i kellyrowland/docker-texlive make
 
 ## 2. Building and Components
 
 The image has the following components:
 
 - [`TeX Live`](http://www.tug.org/texlive/) version 2015.2016
-- [`ghostscript`](http://ghostscript.com/) version 9.18
+- [`Biber`](http://biblatex-biber.sourceforge.net/)
+- [`Make`](http://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html)
+- [`PDFtk`](https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/)
+- [`Vim`](https://vim.sourceforge.io/)
 
 You can build it with
 
-    docker build -t thomasweise/texlive .
+    docker build -t kellyrowland/docker-texlive .
 
 ## 3. Scripts
 
@@ -80,19 +83,15 @@ We provide a set of scripts (in `/bin/`) that can be used for compiling LaTeX do
 Usually, LaTeX compilation means to call the LaTeX compiler program, then BibTeX, then the compiler again, and then some conversion program from the respective compiler output format to PDF. With the compiler scripts, we try to condense these calls into a single program invocation.
 
 - `latex.sh <document>` compile the LaTeX `<document>` with [LaTeX](https://en.wikipedia.org/wiki/LaTeX) (also do [BibTeX](https://en.wikipedia.org/wiki/BibTeX))
-- `lualatex.sh <document>` compile the LaTeX `<document>` with [LuaLaTeX](https://en.wikipedia.org/wiki/LuaTeX) (also do [BibTeX](https://en.wikipedia.org/wiki/BibTeX))
 - `pdflatex.sh <document>` compile the LaTeX `<document>` with [PdfLaTeX](https://en.wikipedia.org/wiki/pdfTeX) (also do [BibTeX](https://en.wikipedia.org/wiki/BibTeX))
-- `xelatex.sh <document>` compile the LaTeX `<document>` with [XeLaTeX](https://en.wikipedia.org/wiki/XeLaTeX) (also do [BibTeX](https://en.wikipedia.org/wiki/BibTeX))
 - `mintex.sh <document> <compiler1> <compiler2> ...` allows you to invoke an arbitrary selection of the above compiler scripts to produce the smallest `pdf`. Doing `mintex.sh mydoc latex lualatex xelatex`, for instance, will compile `mydoc.tex` with `latex.sh`, `lualatex.sh`, and `xelatex.sh` and keep the smallest resulting `pdf` file.
 
 ### 3.2. Utility Scripts
 
 We also provide some utility scripts for working with `PDF`, `PS`, and `EPS` files.
 
-- `eps2pdf.sh <document>` convert the `EPS` file `<document>` to `PDF`
-- `filterPdf.sh <document>` transform a document (either in [PostScript](https://en.wikipedia.org/wiki/PostScript)/`PS`, `EPS`, or `PDF` format) to `PDF` and include as many of the fonts used inside the document into the final `PDF`. This allows to produce a `PDF` from a `.ps` file `<document>` which should display correctly on as many computers as possible. 
 - `sudo` is a pseudo-`sudo` command: Inside a Docker container, we don't need `sudo`. However, if you have a script or something that calls plain `sudo` (without additional arguments) just with a to-be-sudoed command, this script will emulate a `sudo`. By doing nothing.
 
 ## 4. License
 
-This image is licensed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007, which you can find in file [LICENSE.md](https://github.com/thomasWeise/docker-texlive/blob/master/LICENSE.md). The license applies to the way the image is built, while the software components inside the image are under the respective licenses chosen by their respective copyright holders.
+This image is licensed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007, which you can find in file [LICENSE.md](https://github.com/kellyrowland/docker-texlive/blob/master/LICENSE.md). The license applies to the way the image is built, while the software components inside the image are under the respective licenses chosen by their respective copyright holders.

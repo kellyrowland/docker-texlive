@@ -20,21 +20,20 @@ RUN export LANG=C.UTF-8 &&\
     apt-get update &&\
 # install utilities
     apt-get install -f -y apt-utils &&\
-# install TeX Live and ghostscript
-    apt-get install -f -y ghostscript=9.18* \
-                          make=4.1* \
-                          latex-cjk-common=4.8* \
+# install TeX Live
+    apt-get install -f -y make=4.1* \
                           texlive-full=2015.2016* \
                           texlive-fonts-extra=2015.2016* \
                           texlive-fonts-recommended=2015.2016* \
                           texlive-math-extra=2015.2016* \
-                          texlive-lang-cjk=2015.2016* \
                           texlive-pstricks=2015.2016* \
                           texlive-science=2015.2016* &&\
 # install biber
     apt-get install -f -y biber &&\
 # install vim
     apt-get install -f -y vim &&\
+# install pdftk
+    apt-get install -f -y pdftk &&\
 # free huge amount of unused space
     apt-get purge -f -y make-doc \
                         texlive-fonts-extra-doc \
