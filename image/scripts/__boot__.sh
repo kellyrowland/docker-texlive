@@ -8,11 +8,6 @@ set -o errtrace  # trace ERR through 'time command' and other functions
 set -o nounset   # set -u : exit the script if you try to use an uninitialized variable
 set -o errexit   # set -e : exit the script if any statement returns a non-true return value
 
-# print welcome message
-echo "Welcome to the TeX Live docker container thomasweise/texlive."
-echo "GitHub   : http://www.github.com/thomasWeise/docker-texlive"
-echo "DockerHub: http://hub.docker.com/r/thomasweise/texlive"
-
 # ensure that additional fonts are known to fontconfig
 if [ -d /usr/share/fonts/external/ ]; then
   if [ "$(ls -A /usr/share/fonts/external/)" ]; then
@@ -70,14 +65,6 @@ then
   exit $retVal
 else
 # open a shell
-  echo "Besides the standard LaTeX commands, this container provides the following scripts:"
-  echo "1. latex.sh <document>: perform LaTeX/BibTeX/dvips/ghostscript runs."
-  echo "2. lualatex.sh <document>: perform LuaLaTeX/BibTeX runs."
-  echo "3. pdflatex.sh <document>: perform pdfLaTeX/BibTeX runs."
-  echo "4. xelatex.sh <document>: perform XeLaTeX/BibTeX runs."
-  echo "5. filterPdf.sh <document>: include all fonts into <document>."
-  echo "6. eps2pdf.sh <document>: convert eps/ps file to pdf."
-  echo "Alternatively, you could also provide a command and parameters at the end of the 'docker run' command directly, which would then be executed at container start and the container would automatically be closed afterwards."
   set +o pipefail  # no longer trace ERR through pipes
   set +o errtrace  # no longer trace ERR through 'time command' and other functions
   set +o nounset   # no longer exit the script if you try to use an uninitialized variable
