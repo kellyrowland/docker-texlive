@@ -1,5 +1,6 @@
 #
-# thomasweise/texlive
+# Adapted from thomasweise/texlive
+#     and from Kamshak/docker-texlive-biber
 #
 # This is an image with a basic TeX Live installation.
 # Source: https://github.com/thomasWeise/docker-texlive/
@@ -9,7 +10,7 @@
 # licenses chosen by their respective copyright holders.
 # 
 FROM ubuntu:16.04
-MAINTAINER Thomas Weise <tweise@ustc.edu.cn>
+MAINTAINER Kelly Rowland <kellylynnerowland@gmail.com>
 
 RUN export LANG=C.UTF-8 &&\
     apt-get clean &&\
@@ -19,17 +20,6 @@ RUN export LANG=C.UTF-8 &&\
     apt-get update &&\
 # install utilities
     apt-get install -f -y apt-utils &&\
-# install some nice chinese fonts
-    apt-get install -f -y fonts-arphic-bkai00mp \
-                          fonts-arphic-bsmi00lp \
-                          fonts-arphic-gbsn00lp \
-                          fonts-arphic-gkai00mp \
-                          fonts-arphic-ukai \
-                          fonts-arphic-uming \
-                          ttf-wqy-microhei \
-                          ttf-wqy-zenhei \                          
-                          xfonts-intl-chinese \
-                          xfonts-intl-chinese-big &&\
 # install TeX Live and ghostscript
     apt-get install -f -y ghostscript=9.18* \
                           make=4.1* \
@@ -39,11 +29,13 @@ RUN export LANG=C.UTF-8 &&\
                           texlive-fonts-extra=2015.2016* \
                           texlive-fonts-recommended=2015.2016* \
                           texlive-math-extra=2015.2016* \
-                          texlive-lang-cjk=2015.2016* \                          
+                          texlive-lang-cjk=2015.2016* \                      
                           texlive-luatex=2015.2016* \
                           texlive-pstricks=2015.2016* \
                           texlive-science=2015.2016* \
-                          texlive-xetex=2015.2016* &&\
+                          texlive-xetex=2015.2016* \
+# install biber
+                          biber &&\
 # free huge amount of unused space
     apt-get purge -f -y make-doc \
                         texlive-fonts-extra-doc \

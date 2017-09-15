@@ -1,4 +1,4 @@
-# [thomasWeise/texlive](https://hub.docker.com/r/thomasweise/texlive/)
+# Largely adapted from [thomasWeise/texlive](https://hub.docker.com/r/thomasweise/texlive/)
 
 [![Image Layers and Size](https://imagelayers.io/badge/thomasweise/texlive:latest.svg)](https://imagelayers.io/?images=thomasweise%2Ftexlive:latest)
 [![Docker Pulls](https://img.shields.io/docker/pulls/thomasweise/texlive.svg)](https://hub.docker.com/r/thomasweise/texlive/)
