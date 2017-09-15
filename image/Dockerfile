@@ -35,7 +35,9 @@ RUN export LANG=C.UTF-8 &&\
                           texlive-science=2015.2016* \
                           texlive-xetex=2015.2016* \
 # install biber
-                          biber &&\
+                          biber \
+# install vim
+                          vim &&\
 # free huge amount of unused space
     apt-get purge -f -y make-doc \
                         texlive-fonts-extra-doc \
