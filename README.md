@@ -1,6 +1,6 @@
 # Largely adapted from [thomasWeise/texlive](https://hub.docker.com/r/thomasweise/texlive/)
 
-This is a Docker image containing a [TeX Live](https://en.wikipedia.org/wiki/TeX_Live) installation (version 2015.2016) with several support <a href="#user-content-3-scripts">scripts</a> for easing the compilation of [LaTeX](https://en.wikipedia.org/wiki/LaTeX) files to [PDF](https://en.wikipedia.org/wiki/Portable_Document_Format). The goal is to provide a unified environment for compiling LaTeX documents with predictable and reproducible behavior, while decreasing the effort needed to install and maintain the LaTeX installation.
+This is a Docker image containing a [TeX Live](https://en.wikipedia.org/wiki/TeX_Live) installation (version 2015.2016) with a few auxiliary packages for editing files and manipulating PDFs. The goal is to provide a unified environment for compiling LaTeX documents with predictable and reproducible behavior, while decreasing the effort needed to install and maintain the LaTeX installation.
 
 ## 0. Installing Docker
 
@@ -17,34 +17,32 @@ Below, we discuss the various parameters that you can pass to this image when ru
 There are two basic use cases of this image:
 
 1. Execution of a single command or script
-2. Providing a shell where you can use all the standard LaTeX commands and our helper scripts 
+2. Providing a shell where you can use all the standard LaTeX commands
 
-Additionally, there are two ways to provide data to the container:
+To provide data to the container:
 
-1. Mounting the folder where the LaTeX document you want to compile is located: This step is necessary.
-2. Mounting a folder with additional fonts needed for compiling your document: This is optional.
+1. Mount the folder where the LaTeX document you want to compile is located: This step is necessary.
 
 The common form of the command is as follows:
 
-    docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i kellyrowland/docker-texlive COMMAND ARG1 ARG2...
+    docker run -v /my/path/to/document/:/doc/ -t -i kellyrowland/docker-texlive COMMAND ARG1 ARG2...
     
 Where
 
 * `/my/path/to/document/` must be replaced with the path to the folder containing the LaTeX document that you want to compile. This folder will be made available as folder `/doc/` inside the container. If you use the image without command parameters (see below), you will get a bash command prompt inside this `/doc/` folder.
-* Sometimes you may need additional fonts to compile your LaTeX document. An example for this situation is if you use something like the [USTC thesis template](https://github.com/ustctug/ustcthesis), which needs fonts such as SimHei from Windows, which are not available under Linux. In this case, you can use the *optional* `-v /path/to/fonts/:/usr/share/fonts/external/` parameter. Here, `/path/to/fonts/` must be replaced with a path to a folder containing these fonts. If you do not need additional fonts, you can leave the whole `-v /path/to/fonts/:/usr/share/fonts/external/` away.
-* *Optinally* you can also provide a single command that should be executed when the container starts (along with its arguments). This is what the `COMMAND ARG1 ARG2...` in the above command line stand for. If you specify such a command, the container will start up, execute the command, and then shut down. If you do not provide such a command, the container will start up and provide you a bash prompt in folder `/doc/`.
+* *Optionally* you can also provide a single command that should be executed when the container starts (along with its arguments). This is what the `COMMAND ARG1 ARG2...` in the above command line stand for. If you specify such a command, the container will start up, execute the command, and then shut down. If you do not provide such a command, the container will start up and provide you a bash prompt in folder `/doc/`.
 
-For compiling some document named `myDocument.tex` in folder `/my/path/to/document/` with `xelatex.sh` and using additional fonts in folder `/path/to/fonts/`, you would type something like the command below into a normal terminal (Linux), the *Docker Quickstart Terminal* (Mac OS), or the *Docker Toolbox Terminal* (Windows):
+For compiling some document named `myDocument.tex` in folder `/my/path/to/document/` using additional fonts in folder `/path/to/fonts/`, you would type something like the command below into a normal terminal (Linux), the *Docker Quickstart Terminal* (Mac OS), or the *Docker Toolbox Terminal* (Windows):
 
-    docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive
-    xelatex.sh myDocument
+    docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i kellyrowland/docker-texlive
+    latex myDocument
     exit
     
 Alternatively, you could also do
 
-    docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i thomasweise/texlive xelatex.sh myDocument
+    docker run -v /my/path/to/document/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i kellyrowland/docker-texlive latex myDocument
     
-The first version starts the container and leaves you at the command prompt. You can now compile your document using our `xelatex.sh` helper script, then you `exit` the container. In the second version, you directly provide the command to the container. The container executes it and then directly exits.
+The first version starts the container and leaves you at the command prompt. You can now compile your document using LaTeX, then you `exit` the container. In the second version, you directly provide the command to the container. The container executes it and then directly exits.
   
 Both should leave the compiled PDF file in folder `/my/path/to/document/`. If you are not using my pre-defined scripts for building (see below under point 3.1), I recommend doing `chmod 777 myDocument.pdf` after the compilation, to ensure that the produced document can be accessed inside your real (host) system's user, and not just from the Docker container. If you directly provide a single command for execution, the container attempts to heuristically find your produced `pdf` and to set its permissions correctly. 
 
@@ -53,10 +51,6 @@ The `-v sourcepath:destpath` options are optional. They allow you to "mount" a f
 If you just want to use (or snoop around in) the image without mounting external folders, you can run this image by using:
 
     docker run -t -i kellyrowland/docker-texlive
-
-Another example for the use of the syntax for directly passing in a single command for execution is compiling a thesis based on the [USTC thesis template](https://github.com/ustctug/ustcthesis). Such documents can be compiled using `make`, so you could do something like
-
-    docker run -v /path/to/my/thesis/:/doc/ -v /path/to/fonts/:/usr/share/fonts/external/ -t -i kellyrowland/docker-texlive make
 
 ## 2. Building and Components
 
@@ -72,22 +66,6 @@ You can build it with
 
     docker build -t kellyrowland/docker-texlive .
 
-## 3. Scripts
-
-We provide a set of scripts (in `/bin/`) that can be used for compiling LaTeX documents:
-
-### 3.1. Compiler Scripts
-
-Usually, LaTeX compilation means to call the LaTeX compiler program, then BibTeX, then the compiler again, and then some conversion program from the respective compiler output format to PDF. With the compiler scripts, we try to condense these calls into a single program invocation.
-
-- `latex.sh <document>` compile the LaTeX `<document>` with [LaTeX](https://en.wikipedia.org/wiki/LaTeX) (also do [BibTeX](https://en.wikipedia.org/wiki/BibTeX))
-- `pdflatex.sh <document>` compile the LaTeX `<document>` with [PdfLaTeX](https://en.wikipedia.org/wiki/pdfTeX) (also do [BibTeX](https://en.wikipedia.org/wiki/BibTeX))
-- `mintex.sh <document> <compiler1> <compiler2> ...` allows you to invoke an arbitrary selection of the above compiler scripts to produce the smallest `pdf`. Doing `mintex.sh mydoc latex lualatex xelatex`, for instance, will compile `mydoc.tex` with `latex.sh`, `lualatex.sh`, and `xelatex.sh` and keep the smallest resulting `pdf` file.
-
-### 3.2. Utility Scripts
-
-- `sudo` is a pseudo-`sudo` command: Inside a Docker container, we don't need `sudo`. However, if you have a script or something that calls plain `sudo` (without additional arguments) just with a to-be-sudoed command, this script will emulate a `sudo`. By doing nothing.
-
-## 4. License
+## 3. License
 
 This image is licensed under the GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007, which you can find in file [LICENSE.md](https://github.com/kellyrowland/docker-texlive/blob/master/LICENSE.md). The license applies to the way the image is built, while the software components inside the image are under the respective licenses chosen by their respective copyright holders.
